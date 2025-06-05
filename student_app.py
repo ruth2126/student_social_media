@@ -7,3 +7,6 @@ print(df.shape)
 print(df.columns)
 print(df.describe())
 print(df.dtypes)
+
+missing_values = df.isnull().sum()
+print(missing_values)
