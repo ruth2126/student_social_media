@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
+from scipy.stats import ttest_ind
 
 
 
@@ -42,4 +43,19 @@ print(usage_by_academic_impact)
 
 sleep_mental_by_impact=df.groupby('Affects_Academic_Performance')[['Sleep_Hours_Per_Night', 'Mental_Health_Score']].mean()
 print(sleep_mental_by_impact)
+df.corr(numeric_only= True) ['Addicted_Score'].sort_values(ascending=False)
+#  T-Test: Addiction Score Difference Between Genders 
+
+# Split the addiction scores by gender
+male_scores = df[df['Gender'] == 'Male']['Addicted_Score']
+female_scores = df[df['Gender'] == 'Female']['Addicted_Score']
+
+# Perform independent samples t-test
+ttest_gender = ttest_ind(male_scores, female_scores, equal_var=False)  #Welch’s t-test for unequal variance
+print("T-Test: Addiction Score by Gender")
+print(f"t-statistic = {ttest_gender.statistic:.3f}, p-value = {ttest_gender.pvalue:.5f}")
+print("Interpretation: ",
+      "Significant difference" if ttest_gender.pvalue < 0.05 else "No significant difference")
+print("-" * 50)
+
 
