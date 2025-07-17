@@ -2,7 +2,7 @@ import pandas as pd
 import streamlit as st
 import seaborn as sns
 import matplotlib.pyplot as plt
-from scipy.stats import ttest_ind
+from scipy.stats import ttest_ind, f_oneway
 
 
 
@@ -57,5 +57,39 @@ print(f"t-statistic = {ttest_gender.statistic:.3f}, p-value = {ttest_gender.pval
 print("Interpretation: ",
       "Significant difference" if ttest_gender.pvalue < 0.05 else "No significant difference")
 print("-" * 50)
+
+# ANOVA: Addiction Score Across Academic Levels
+
+# Get addiction scores for each academic level
+high_school_scores = df[df['Academic_Level'] == 'High School']['Addicted_Score']
+undergraduate_scores = df[df['Academic_Level'] == 'Undergraduate']['Addicted_Score']
+graduate_scores = df[df['Academic_Level'] == 'Graduate']['Addicted_Score']
+
+# Perform one-way ANOVA
+anova_academic = f_oneway(high_school_scores, undergraduate_scores, graduate_scores)
+print("ANOVA: Addiction Score by Academic Level")
+print(f"F-statistic = {anova_academic.statistic:.3f}, p-value = {anova_academic.pvalue:.5f}")
+print("Interpretation: ",
+      "At least one group differs significantly" if anova_academic.pvalue < 0.05 else "No significant difference")
+print("-" * 50)
+
+
+
+
+#T-Test: Sleep Hours Between Students Affected Academically vs Not
+
+# Split sleep hours by academic impact
+sleep_affected = df[df['Affects_Academic_Performance'] == 'Yes']['Sleep_Hours_Per_Night']
+sleep_not_affected = df[df['Affects_Academic_Performance'] == 'No']['Sleep_Hours_Per_Night']
+
+# Perform independent samples t-test
+ttest_sleep = ttest_ind(sleep_affected, sleep_not_affected, equal_var=False)
+print("T-Test: Sleep Hours by Academic Impact")
+print(f"t-statistic = {ttest_sleep.statistic:.3f}, p-value = {ttest_sleep.pvalue:.5f}")
+print("Interpretation: ",
+      "Significant difference in sleep hours" if ttest_sleep.pvalue < 0.05 else "No significant difference")
+print("-" * 50)
+
+
 
 
